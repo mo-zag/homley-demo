@@ -1,0 +1,23 @@
+h1= @project.name
+p= @project.description
+
+h2 Conversation History
+ul
+  - @comments.each do |comment|
+    li
+      strong= comment.user.name
+      |  said:
+      |  = comment.content
+      |  at 
+      = comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+
+
+h3 Change Status
+= form_with url: update_status_project_path(@project), method: :patch do |f|
+  = f.select :status, Project.statuses.keys.map { |status| [status.humanize, status] }
+  = f.submit 'Update Status'
+
+h3 Add a Comment
+= form_with model: [@project, @project.comments.build], local: true do |f|
+  = f.text_area :content
+  = f.submit 'Add Comment'
